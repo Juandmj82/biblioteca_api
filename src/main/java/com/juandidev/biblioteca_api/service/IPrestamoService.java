@@ -7,4 +7,6 @@ public interface IPrestamoService {
 
     public PrestamoResponseDTO crearPrestamo(PrestamoRequestDTO dto);
 
+    public PrestamoResponseDTO devolverPrestamo(Long id);
+
 }

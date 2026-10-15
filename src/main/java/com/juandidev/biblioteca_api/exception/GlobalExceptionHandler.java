@@ -26,6 +26,18 @@ public class GlobalExceptionHandler {
         return new ErrorResponseLibreria(ex.getMessage(), "Libro no encontrado en la base de datos", LocalDateTime.now());
     }
 
+    @ExceptionHandler(PrestamoNoEncontradoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponseLibreria prestamoNoEncontrado(PrestamoNoEncontradoException ex){
+        return new ErrorResponseLibreria(ex.getMessage(), "Préstamo no encontrado en la base de datos", LocalDateTime.now());
+    }
+
+    @ExceptionHandler(PrestamoYaDevueltoException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponseLibreria prestamoYaDevuelto(PrestamoYaDevueltoException ex){
+        return new ErrorResponseLibreria(ex.getMessage(), "Préstamo ya devuelto en la base de datos", LocalDateTime.now());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseLibreria datosInvalidos(MethodArgumentNotValidException ex){

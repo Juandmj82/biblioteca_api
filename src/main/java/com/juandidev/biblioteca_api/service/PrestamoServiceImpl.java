@@ -5,6 +5,8 @@ import com.juandidev.biblioteca_api.dto.PrestamoRequestDTO;
 import com.juandidev.biblioteca_api.dto.PrestamoResponseDTO;
 import com.juandidev.biblioteca_api.exception.ClienteNoEncontradoException;
 import com.juandidev.biblioteca_api.exception.LibroNoEncontradoException;
+import com.juandidev.biblioteca_api.exception.PrestamoNoEncontradoException;
+import com.juandidev.biblioteca_api.exception.PrestamoYaDevueltoException;
 import com.juandidev.biblioteca_api.model.Cliente;
 import com.juandidev.biblioteca_api.model.Libro;
 import com.juandidev.biblioteca_api.model.Prestamo;
@@ -47,6 +49,23 @@ public class PrestamoServiceImpl implements IPrestamoService {
         // 5) Devolver el resultado ya convertido, con convertirDTO
 
         return convertirDTO(guardado);
+    }
+
+    @Override
+    public PrestamoResponseDTO devolverPrestamo(Long id) {
+        // 1) Buscar el préstamo por id. Si no existe, lanzar PrestamoNoEncontradoException
+        Prestamo prestamo = prestamoRepo.findById(id).orElseThrow(()->new PrestamoNoEncontradoException("El préstamo con id " + id + " no encontrado" ));
+
+        // 2) Si su fechaDevolucion ya NO es null, lanzar la excepción de "ya devuelto" (la creamos después)
+        if(prestamo.getFechaDevolucion() != null ){
+            throw new PrestamoYaDevueltoException("Préstamo con id " + id + " ya fue devuelto");
+        }
+
+        // 3) Ponerle fechaDevolucion = ahora (LocalDateTime.now())
+        prestamo.setFechaDevolucion(LocalDateTime.now());
+
+        // 4) Guardar y devolver convertirDTO(lo guardado)
+        return convertirDTO(prestamoRepo.save(prestamo));
     }
 
     private PrestamoResponseDTO convertirDTO(Prestamo prestamo){
