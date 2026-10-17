@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/prestamos")
 @RequiredArgsConstructor
@@ -22,5 +24,20 @@ public class PrestamoController {
             @PutMapping("/{id}/devolver")
             public PrestamoResponseDTO devolverPrestamo(@PathVariable Long id){
                 return prestamoService.devolverPrestamo(id);
+            }
+
+            @GetMapping()
+            public List<PrestamoResponseDTO> listarPrestamos(){
+                return prestamoService.listarPrestamos();
+            }
+
+            @GetMapping("/{id}")
+            public PrestamoResponseDTO buscarPrestamo(@PathVariable Long id){
+                return prestamoService.buscarPrestamo(id);
+            }
+
+            @GetMapping("/cliente/{clienteId}")
+            public List<PrestamoResponseDTO> listarPrestamosPorCliente(@PathVariable Long clienteId){
+                return prestamoService.listarPrestamoPorCliente(clienteId);
             }
 }

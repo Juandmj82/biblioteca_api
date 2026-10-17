@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -72,6 +73,28 @@ public class PrestamoServiceImpl implements IPrestamoService {
 
         // 4) Guardar y devolver convertirDTO(lo guardado)
         return convertirDTO(prestamoRepo.save(prestamo));
+    }
+
+    @Override
+    public List<PrestamoResponseDTO> listarPrestamos() {
+        return prestamoRepo.findAll().stream()
+                .map(this::convertirDTO)
+                .toList();
+
+    }
+
+    @Override
+    public PrestamoResponseDTO buscarPrestamo(Long id) {
+        Prestamo encontrado = prestamoRepo.findById(id).orElseThrow(()-> new PrestamoNoEncontradoException("Préstamo con id " + id + " no encontrado"));
+        return convertirDTO(encontrado);
+    }
+
+    @Override
+    public List<PrestamoResponseDTO> listarPrestamoPorCliente(Long clienteId) {
+        return prestamoRepo.findByClienteId(clienteId).stream()
+                .map(this::convertirDTO)
+                .toList();
+
     }
 
     private PrestamoResponseDTO convertirDTO(Prestamo prestamo){
