@@ -3,10 +3,7 @@ package com.juandidev.biblioteca_api.service;
 
 import com.juandidev.biblioteca_api.dto.PrestamoRequestDTO;
 import com.juandidev.biblioteca_api.dto.PrestamoResponseDTO;
-import com.juandidev.biblioteca_api.exception.ClienteNoEncontradoException;
-import com.juandidev.biblioteca_api.exception.LibroNoEncontradoException;
-import com.juandidev.biblioteca_api.exception.PrestamoNoEncontradoException;
-import com.juandidev.biblioteca_api.exception.PrestamoYaDevueltoException;
+import com.juandidev.biblioteca_api.exception.*;
 import com.juandidev.biblioteca_api.model.Cliente;
 import com.juandidev.biblioteca_api.model.Libro;
 import com.juandidev.biblioteca_api.model.Prestamo;
@@ -29,6 +26,15 @@ public class PrestamoServiceImpl implements IPrestamoService {
 
     @Override
     public PrestamoResponseDTO crearPrestamo(PrestamoRequestDTO dto) {
+
+        //validaciones
+        if (prestamoRepo.existsByLibroIdAndFechaDevolucionIsNull(dto.libroId())) {
+            throw new LibroYaPrestadoException("El libro con id " + dto.libroId() + " ya está prestado");
+        }
+
+        if (prestamoRepo.existsByClienteIdAndFechaDevolucionIsNull(dto.clienteId())) {
+            throw new ClienteConPrestamoPendienteException("El cliente con id " + dto.clienteId() + " ya tiene un préstamo activo");
+        }
         // 1) Buscar el cliente con dto.clienteId(). Si no existe, lanzar ClienteNoEncontradoException
 
         Cliente cliente = clienteRepo.findById(dto.clienteId())

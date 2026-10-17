@@ -38,6 +38,19 @@ public class GlobalExceptionHandler {
         return new ErrorResponseLibreria(ex.getMessage(), "Préstamo ya devuelto en la base de datos", LocalDateTime.now());
     }
 
+    @ExceptionHandler(LibroYaPrestadoException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponseLibreria LibroYaPrestado(LibroYaPrestadoException ex){
+        return new ErrorResponseLibreria(ex.getMessage(),"Libro ya prestado", LocalDateTime.now());
+    }
+
+    @ExceptionHandler(ClienteConPrestamoPendienteException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponseLibreria clienteConPrestamo(ClienteConPrestamoPendienteException ex){
+        return new ErrorResponseLibreria(ex.getMessage(), "El cliente ya tiene préstamo pendiente", LocalDateTime.now());
+    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseLibreria datosInvalidos(MethodArgumentNotValidException ex){
