@@ -10,11 +10,11 @@ public record ClienteRequestDTO(
         @Size(min = 2, max =50, message = "El nombre debe tener mínimo 2 caracteres , máximo 50")
         String nombre,
 
-        Long dni,
-
         @NotBlank(message= "El apellido es obligatorio")
         @Size(min = 2, max =50, message = "El apellido debe tener mínimo 2 caracteres , máximo 50")
         String apellido,
+
+        Long dni,
 
         @Email(message = "El email debe tener formato válido")
         String email,
