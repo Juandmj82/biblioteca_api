@@ -73,6 +73,39 @@ public class LibroServiceImplTest {
     }
 
     @Test
+    void actualizarLibro_deberiaRetornarDTO_siDatosSonValidos(){
+        //1. Arrange. Creamos libro viejo y dtocon datos nuevos para actualizar
+        Libro existente = new Libro(1L, "Cien años de soledad", "Gabriel García Marquez ", "viejo", "12345qw");
+        LibroRequestDTO dtoNuevo = new LibroRequestDTO("Cien años de Soledad", "Gabriel García Marquez", "Nuevo", "12345qw");
+
+        //entrenamos el repo mockito
+        when(libroRepo.findById(1L)).thenReturn(Optional.of(existente));
+        when(libroRepo.save(any(Libro.class))).thenAnswer(i-> i.getArgument(0));
+
+        //2.Act
+        LibroResponseDTO resultado = libroService.actualizarLibro(1L, dtoNuevo);
+
+        //3. Assert
+        assertNotNull(resultado);
+        assertEquals("Nuevo", resultado.genero());
+    }
+
+    @Test
+    void actualizarLibro_deberiaLanzarExcepcion_cuandoIdNoExiste(){
+        LibroRequestDTO dtoNuevo = new LibroRequestDTO("Cien Años de soledad", "Gabriel García Márquez", "Nuevo", "123456qw");
+
+        //1. Arrange
+        when(libroRepo.findById(99L)).thenReturn(Optional.empty());
+
+        //2 y 3 Act & Assert
+        assertThrows(LibroNoEncontradoException.class, ()->{
+            libroService.actualizarLibro(99L, dtoNuevo);
+        });
+    }
+
+
+
+    @Test
     void eliminarLibro_deberiaLanzarExcepcion_cuandoIdNoExiste(){
         //1.Arrange
         when(libroRepo.findById(1L)).thenReturn(Optional.empty());
