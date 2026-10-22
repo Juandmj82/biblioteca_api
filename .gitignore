@@ -32,3 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 .output.txt
+
+### Secretos y Variables de Entorno ###
+.env
+*.env
+!.env.example
+

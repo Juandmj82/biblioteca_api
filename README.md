@@ -129,7 +129,48 @@ La lógica de negocio se encuentra 100% blindada mediante **16 pruebas unitarias
 
 ---
 
-## ⚙️ Configuración y Ejecución Local
+## 🐳 Ejecución con Docker (Recomendada)
+
+El proyecto está completamente contenerizado mediante una arquitectura **multi-stage build** y orquestado con **Docker Compose** para levantar la API y PostgreSQL con persistencia garantizada.
+
+### 1. Clonar y configurar variables de entorno
+```bash
+# Copiar plantilla de variables de entorno
+cp .env.example .env
+```
+*(Edita el archivo `.env` si deseas personalizar tus credenciales locales; este archivo está protegido por `.gitignore`).*
+
+### 2. Levantar la solución completa
+```bash
+docker compose up -d
+```
+Docker descargará la imagen de PostgreSQL 14 Alpine, construirá la imagen de Spring Boot 4 y pondrá en marcha los servicios en la red virtual privada.
+
+### 3. Verificar estado y logs
+```bash
+# Ver estado de los contenedores
+docker compose ps
+
+# Seguir logs de la API en tiempo real
+docker compose logs -f api
+```
+
+### 4. Acceso a la aplicación
+- **API y Swagger UI:** `http://localhost:8081/swagger-ui/index.html`
+- **PostgreSQL:** Puerto `5432` expuesto para herramientas GUI como DBeaver o DataGrip.
+
+### 5. Detener la solución
+```bash
+# Pausar y remover contenedores (preserva datos del volumen)
+docker compose down
+
+# Limpieza total incluyendo datos de la base de datos
+docker compose down -v
+```
+
+---
+
+## ⚙️ Configuración y Ejecución Local Tradicional (Sin Docker)
 
 ### 1. Prerrequisitos
 - JDK 21 instalado (`java -version`).

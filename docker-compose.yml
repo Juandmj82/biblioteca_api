@@ -1,0 +1,67 @@
+# ==============================================================================
+# ORQUESTACIÓN DE LA SOLUCIÓN: BIBLIOTECA API + POSTGRESQL
+# ==============================================================================
+# CERO SECRETOS HARDCODEADOS:
+# Todos los valores confidenciales se cargan automáticamente desde el archivo local .env
+# el cual está estrictamente ignorado en .gitignore para proteger el repositorio.
+
+services:
+
+  # ----------------------------------------------------------------------------
+  # 1. SERVICIO DE BASE DE DATOS (PostgreSQL)
+  # ----------------------------------------------------------------------------
+  db:
+    image: postgres:14-alpine
+    container_name: biblioteca_postgres_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: biblioteca_db
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - red_biblioteca
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d biblioteca_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ----------------------------------------------------------------------------
+  # 2. SERVICIO DE LA API BACKEND (Spring Boot)
+  # ----------------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: biblioteca_api:latest
+    container_name: biblioteca_api_backend
+    restart: on-failure
+    ports:
+      - "8081:8081"
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/biblioteca_db
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - red_biblioteca
+
+# ==============================================================================
+# ALMACENAMIENTO PERSISTENTE (Named Volumes)
+# ==============================================================================
+volumes:
+  postgres_data:
+
+# ==============================================================================
+# RED VIRTUAL AISLADA (Network Bridge)
+# ==============================================================================
+networks:
+  red_biblioteca:
+    driver: bridge
