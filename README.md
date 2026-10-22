@@ -7,6 +7,7 @@
 ![Spring Security](https://img.shields.io/badge/Spring_Security-7.1-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-Stateless-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Swagger](https://img.shields.io/badge/Swagger-OpenAPI_3-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
 ![JUnit 5](https://img.shields.io/badge/Tests-16%20Passed-25A162?style=for-the-badge&logo=junit5&logoColor=white)
 
 **API RESTful empresarial para la gestión integral de préstamos, clientes y libros, construida con arquitectura limpia, seguridad moderna basada en roles y validaciones estrictas de negocio.**
@@ -44,6 +45,7 @@ src/main/java/com/juandidev/biblioteca_api/
 - **Framework:** Spring Boot 4.1.1 (`spring-boot-starter-webmvc`, `spring-boot-starter-data-jpa`, `spring-boot-starter-validation`).
 - **Seguridad:** Spring Security 7 + JJWT 0.12.6 (algoritmo HMAC-SHA256, clave criptográfica de 256 bits).
 - **Persistencia:** PostgreSQL 14 con HikariCP como pool de conexiones.
+- **Documentación Interactiva:** OpenAPI 3 / Swagger UI (`springdoc-openapi`) con integración de Bearer JWT.
 - **Testing:** JUnit 5, Mockito, AssertJ.
 - **Productividad:** Project Lombok (`@Builder`, `@RequiredArgsConstructor`).
 - **Control de API:** Postman Collection oficial estructurada con variables globales y herencia de autenticación.
@@ -151,6 +153,19 @@ export JWT_SECRET_KEY="tu_clave_secreta_en_hex_256_bits"
 # Iniciar la aplicación en el puerto 8081
 ./mvnw spring-boot:run
 ```
+
+---
+
+## 📖 Documentación Interactiva (Swagger UI)
+
+Una vez que la aplicación esté en ejecución en el puerto `8081`, la documentación visual interactiva se encuentra disponible en:
+
+👉 **[http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)**
+
+### Características de la documentación:
+- **Organización secuencial:** Endpoints ordenados lógicamente (`1. Autenticación`, `2. Libros`, `3. Clientes`, `4. Préstamos`).
+- **Autenticación en vivo:** Permite obtener el JWT desde `/auth/login` y pegarlo en el botón superior **`Authorize` 🔓** para probar endpoints protegidos directamente desde el navegador.
+- **Esquemas JSON:** Vista interactiva de Request Bodies y Responses con validaciones de campo.
 
 ---
 
