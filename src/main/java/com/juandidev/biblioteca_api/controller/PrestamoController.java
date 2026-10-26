@@ -4,6 +4,8 @@ import com.juandidev.biblioteca_api.dto.PrestamoRequestDTO;
 import com.juandidev.biblioteca_api.dto.PrestamoResponseDTO;
 import com.juandidev.biblioteca_api.service.IPrestamoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +22,24 @@ public class PrestamoController {
     private final IPrestamoService prestamoService;
 
     @PostMapping
-    @Operation(summary = "Crear préstamo", description = "Registra un préstamo validando que el libro no esté prestado y el cliente no tenga deudas.")
+    @Operation(summary = "Crear préstamo", description = "Registra un préstamo validando disponibilidad de stock y que el cliente no tenga deudas activas.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Préstamo registrado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos (ej: IDs nulos o negativos)"),
+            @ApiResponse(responseCode = "404", description = "Cliente o libro no encontrado en la base de datos"),
+            @ApiResponse(responseCode = "409", description = "Conflicto: Libro sin stock (ya prestado) o cliente con préstamo pendiente")
+    })
     public PrestamoResponseDTO crearPrestamo(@Valid @RequestBody PrestamoRequestDTO dto){
         return prestamoService.crearPrestamo(dto);
     }
 
     @PutMapping("/{id}/devolver")
     @Operation(summary = "Devolver préstamo", description = "Marca un préstamo como devuelto. Si ya fue devuelto, retorna 409 Conflict.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Préstamo devuelto exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Préstamo no encontrado"),
+            @ApiResponse(responseCode = "409", description = "El préstamo ya había sido devuelto previamente")
+    })
     public PrestamoResponseDTO devolverPrestamo(@PathVariable Long id){
         return prestamoService.devolverPrestamo(id);
     }

@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(LibroYaPrestadoException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponseLibreria LibroYaPrestado(LibroYaPrestadoException ex){
-        return new ErrorResponseLibreria(ex.getMessage(),"Libro ya prestado", LocalDateTime.now());
+        return new ErrorResponseLibreria(ex.getMessage(), "Sin stock / Libro no disponible", LocalDateTime.now());
     }
 
     @ExceptionHandler(ClienteConPrestamoPendienteException.class)

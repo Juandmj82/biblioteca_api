@@ -30,7 +30,7 @@ public class PrestamoServiceImpl implements IPrestamoService {
 
         //validaciones
         if (prestamoRepo.existsByLibroIdAndFechaDevolucionIsNull(dto.libroId())) {
-            throw new LibroYaPrestadoException("El libro con id " + dto.libroId() + " ya está prestado");
+            throw new LibroYaPrestadoException("Sin stock disponible: el libro con id " + dto.libroId() + " ya está prestado");
         }
 
         if (prestamoRepo.existsByClienteIdAndFechaDevolucionIsNull(dto.clienteId())) {
